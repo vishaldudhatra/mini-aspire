@@ -21,10 +21,16 @@ class Controller extends BaseController
     }
 
     // SUCCESS RESPONSE
-    protected function respondWithJson($message='',$return=array(), $code) {
+    protected function respondWithJson($message='',$data=array(), $code) {
+
         // ADD MESSAGE
         if($message != ''){
             $return['message'] = $message;
+            if($data)
+                $return['content'] = $data;
+        }
+        else{
+            $return = $data;
         }
 
         return response()->json($return, $code);

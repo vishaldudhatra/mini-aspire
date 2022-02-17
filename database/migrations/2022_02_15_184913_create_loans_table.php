@@ -19,7 +19,7 @@ class CreateLoansTable extends Migration
             $table->decimal('approved_amount', 15, 2);
             $table->string('currency', 8)->default('USD');
             $table->tinyInteger('loan_terms')->comment('Unit: weekly');
-            $table->decimal('interest_rate', 4, 2)->comment('Per weekly');
+            $table->decimal('interest_rate', 8, 4)->comment('Per weekly');
             $table->decimal('total_interest', 12, 2);
             $table->decimal('repayment_amount', 10, 2)->comment('Per weekly');
             $table->enum('status',['pending','approved','rejected','completed'])->default('approved');

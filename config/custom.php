@@ -14,7 +14,7 @@ return [
     'internal_server_response' => 500,
 
 
-    'interest_rate' => 0.5, // PER WEEK
+    'interest_rate' => 10, // PER YEAR
 
 ];
 

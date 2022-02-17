@@ -20,6 +20,10 @@ class LoanController extends Controller
     }
 
     public function store(Request $request) {
+        $p = 10000;
+        $r = 6;
+        $n = 52;
+
 
         // VALIDATION RULE
         $validator = Validator::make($request->all(), [
@@ -37,7 +41,7 @@ class LoanController extends Controller
 
         // CHECK VALIDATION
         if ($validator->fails()) {
-            $this->validateWithJson($validator);
+            return $this->validateWithJson($validator);
         }
 
         try {
@@ -49,25 +53,25 @@ class LoanController extends Controller
 
 
             if (!$loan_exists) {
-                $interest = config('custom.interest_rate');
-
-                $total_interest = $this->approvedAmount * ($interest * $this->loanTerms / 100);
-                $repayment_amount = ($this->approvedAmount + $total_interest) / $this->loanTerms;
+                $interest = (config('custom.interest_rate') / 100 / 52);
+                //$total_interest = $request->approvedAmount * (($interest * $request->loanTerms) / 100);
+                $total_interest = $request->approvedAmount  * $interest  * $request->loanTerms;
+                $repayment_amount = ($request->approvedAmount + $total_interest) / $request->loanTerms;
 
                 $data = array(
                     'approved_amount' => $request->approvedAmount,
                     'currency' => $request->currency,
                     'loan_terms' => $request->loanTerms,
-                    'interest_rate' => $interest,
-                    'total_interest' => $total_interest,
-                    'total_interest' => $total_interest,
-                    'repayment_amount' => $repayment_amount,
+                    'interest_rate' => round($interest,4),
+                    'total_interest' => round($total_interest,2),
+                    'repayment_amount' => round($repayment_amount,2),
                     'status' => 'approved',
+                    'user_id' => Auth::user()->id,
                 );
 
                 $loan = Loan::create($data);
 
-                return $this->respondWithJson(__('custom.loan_approved_succ'), LoanResource::make($loan), config('custom.create_response'));
+                return $this->respondWithJson(__('custom.loan_approved_succ'), new LoanResource($loan), config('custom.create_response'));
             }
             else{
                 return $this->respondWithJson(__('custom.loan_request_exist'), [], config('custom.bad_request_response'));
@@ -80,12 +84,12 @@ class LoanController extends Controller
 
     public function show($id) {
         $user = Auth::user();
-        $loans = Loan::where('user_id', $user->id)
+        $loan = Loan::where('user_id', $user->id)
             ->where('id', $id)
             ->first();
 
-        if(!empty($loans)){
-            return $this->respondWithJson('', LoanResource::collection($loans), config('custom.success_response'));
+        if(!empty($loan)){
+            return $this->respondWithJson('', new LoanResource($loan), config('custom.success_response'));
         }
         else{
             return $this->respondWithJson('No loan found.', [], config('custom.bad_request_response'));

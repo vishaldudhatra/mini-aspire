@@ -30,9 +30,7 @@ class RegisterController extends Controller
 
         // CHECK VALIDATION
         if ($validator->fails()) {
-            return response()->json([
-                'message'=>implode(" \n ",$validator->errors()->all())
-            ], config('custom.bad_request_response'));
+            return $this->validateWithJson($validator);
         }
         else{
             try {
@@ -45,12 +43,14 @@ class RegisterController extends Controller
             ];
                 $user = User::create($data);
 
-                $access_token =   $user->createToken('Token Name')->token;
+                $token = $user->createToken($user->id);
+
                 // RETURN RESPONSE
-                //$return = UserResource::make($user);
-                //$return['accessToken'] = $access_token;
-                print_r($access_token);exit;
-                return $this->respondWithJson(__('custom.register_success'), ['accessToken'=>$access_token,], config('custom.create_response'));
+                $return = UserResource::make($user)->resource;
+                $return->accessToken = $token->accessToken;
+
+
+                return $this->respondWithJson(__('custom.register_success'), [$return], config('custom.create_response'));
             } catch (\Exception $exception) {
                 return $this->respondWithJson($exception->getMessage(), [], config('custom.bad_request_response'));
             }

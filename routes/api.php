@@ -28,6 +28,7 @@ Route::group(['middleware' => 'apikey'], function () {
 
             Route::post('/re-payment', [App\Http\Controllers\API\RepaymentController::class, 'index']);
 
+            Route::get('/logout', [App\Http\Controllers\API\LogoutController::class, 'index']);
         });
     });
 });

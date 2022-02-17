@@ -11,16 +11,16 @@ class LoanResource extends JsonResource
     {
         return [
             'loanId' => (int) $this->id,
-            'approvedAmount' => $this->approved_amount,
-            'currency' => $this->currency,
-            'loanTerms' => $this->loan_terms,
-            'interestRate' => $this->interest_rate,
-            'totalInterest' => $this->total_interest,
-            'repaymentAmount' => $this->repayment_amount,
+            'approvedAmount' => (float)$this->approved_amount,
+            'currency' => (string)$this->currency,
+            'loanTerms' => (int)$this->loan_terms,
+            'interestRate' => (float)$this->interest_rate,
+            'totalInterest' => (float)$this->total_interest,
+            'repaymentAmount' => (float)$this->repayment_amount,
             'loanStatus' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'repayments' => RepaymentResource::collection($this->whenLoaded('repayments')),
+            'repayments' => RepaymentResource::collection($this->repayments),
         ];
     }
 }

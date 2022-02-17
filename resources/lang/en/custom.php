@@ -23,5 +23,6 @@ return [
     "loan_not_eixst" => "Loan not found.",
     "loan_approved_succ" => "Your loan has been approved successfully.",
     "loan_request_exist" => "You already have a pending or ongoing loan.",
+    "scc_logout" => "you have been logged out successfully.",
 
 ];

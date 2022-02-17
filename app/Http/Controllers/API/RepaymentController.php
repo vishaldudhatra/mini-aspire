@@ -8,6 +8,7 @@ use App\Models\Repayment;
 use App\Resources\RepaymentResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class RepaymentController extends Controller
 {
@@ -26,7 +27,7 @@ class RepaymentController extends Controller
 
         // CHECK VALIDATION
         if ($validator->fails()) {
-            $this->validateWithJson($validator);
+            return $this->validateWithJson($validator);
         }
 
         try {
@@ -37,10 +38,12 @@ class RepaymentController extends Controller
 
             if(!empty($loan)){
                 if($loan->repayment_amount == $request->amount){
+
                     // REPAYMNT
                     $repayment = $loan->repayments()->create([
                         'repayment_amount' => $request->amount,
                         'repayment_method' => $request->repaymentMethod,
+                        'user_id' => Auth::user()->id,
                     ]);
 
                     // UPDATE LOAN STATUS

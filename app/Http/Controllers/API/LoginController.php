@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         // CHECK VALIDATION
         if ($validator->fails()) {
-            $this->validateWithJson($validator);
+            return $this->validateWithJson($validator);
         }
 
         try {
@@ -39,12 +39,12 @@ class LoginController extends Controller
 
             if(!empty($user)){
                 if (Hash::check($request->password, $user->password)){
-                    $token = $user->createToken(@$user->id)->accessToken;
+
+                    $token = $user->createToken($user->id);
 
                     // RETURN RESPONSE
-
                     $return = UserResource::make($user)->resource;
-                    $return->token = $token;
+                    $return->accessToken = $token->accessToken;
 
                     return $this->respondWithJson(__('custom.login_success'), $return, config('custom.create_response'));
                 }

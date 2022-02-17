@@ -9,6 +9,8 @@ class Repayment extends Model
 {
     use HasFactory;
 
+    const UPDATED_AT = NULL;
+
     protected $fillable = [
         'user_id',
         'loan_id',
